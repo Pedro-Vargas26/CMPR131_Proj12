@@ -11,7 +11,7 @@ using namespace std;
 
 void option3();
 void mvStr(char*,const int, string&);
-HashTable<Student> translateFile(const string&);
+HashTable<Student> translateFile(const string&, int&);
 
 int main(){
     option3();
@@ -19,38 +19,39 @@ int main(){
 
 
 
-HashTable<Student> translateFile(const string& fileName) {
-    if (fileName.empty())throw std::runtime_error("ERROR: INVALID FILENAME");
+HashTable<Student> translateFile(const string& fileName, int& n) {
+    if (fileName.empty())
+        throw std::runtime_error("ERROR: INVALID FILENAME");
 
-    fstream fileReader;
-    HashTable <Student> info;
+    fstream fileReader(fileName, ios::in);
+    if (!fileReader.is_open())
+        throw std::runtime_error("ERROR: FILE FAILED TO OPEN.");
 
+    HashTable<Student> info;
     string fromFile = "";
+    int i = 0;
 
-    fileReader.open(fileName, ios::in);
 
-    if (fileReader.is_open()) {
-        while (getline(fileReader, fromFile)) {
-            stringstream ss(fromFile);
+    while (i < n && std::getline(fileReader, fromFile))
+    {
+        stringstream ss(fromFile);
 
-            string fileID = ""; 
-            string fileName = "";
-            string fileMajor = "";
-            string fileGPA = "";
+        string fileID, fileName, fileMajor, fileGPA;
 
-            if (!std::getline(ss, fileID, ',')) continue;
-            if (!std::getline(ss, fileName, ',')) continue;
-            if (!std::getline(ss, fileMajor, ',')) continue;
-            if (!std::getline(ss, fileGPA, ',')) continue;
+        if (!getline(ss, fileID, ',')) continue;
+        if (!getline(ss, fileName, ',')) continue;
+        if (!getline(ss, fileMajor, ',')) continue;
+        if (!getline(ss, fileGPA, ',')) continue;
 
-            Student toHash(fileName, fileMajor, stoi(fileID), stof(fileGPA));
-            info.insert(toHash);
-        }
-        fileReader.close();
+        Student s(fileName, fileMajor, stoi(fileID), stof(fileGPA));
+        info.insert(s);
+        i++;
     }
-    else throw std::runtime_error("ERROR: FILE FAILED TO OPEN. ");
+
+    n = i;
     return info;
 }
+
 
 void mvStr(char* dest, const int buffSize, string& src) {
     if (src.length() >= buffSize)src = src.substr(0, buffSize - 1);
@@ -77,7 +78,7 @@ void option3() {
     int needle = 0;
     int n = 0;
     int tempInt = 0;
-
+    int idx = 0;
 
     double tempDouble = 0.0;
 
@@ -103,8 +104,8 @@ void option3() {
     case 'A':
         n = inputInteger("\t\tEnter a number of read-in records: ", true);
         try {
-            haystack = translateFile(fileName);
-            cout << "\t\t" << n << "records have been inserted. \n\n";
+            haystack = translateFile(fileName, n);
+            cout << "\t\t" << n << " records have been inserted. \n\n";
         }
         catch (...) {
             cerr << "\t\t" << "ERROR: FILE OPERATION FAILED. \n\n";
@@ -151,6 +152,15 @@ void option3() {
     case 'D':
         needle = inputInteger("\t\tEnter a student ID to remove: ", true);
 
+        idx = haystack.remove(needle);
+        cout << "\t\t";
+        if (idx != -1) {
+            cout << "Student record index #" << idx << " with ID: " << needle << " has been removed.";
+        }
+        else {
+            cout << "ERROR: ID CANNOT BE FOUND.";
+        }
+        cout << "\n\n";
         //erase logic here
         //success: student record index#n with ID: idnum has been removed. 
         //failed:  ERROR: ID cannot be found.
@@ -160,7 +170,7 @@ void option3() {
         if (haystack.empty())cout << "\n\n\t\t" << "ERROR: no record found.\n\n\t";
         else
             for (int i = 0; i < haystack.size();i++) 
-                cout << "[" << i << "]: -" << haystack[i] << "\n";
+                cout << "[" << i << "]: -> " << haystack[i] << "\n";
         break;
     default:
         running = false;
