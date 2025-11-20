@@ -1,33 +1,52 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include "DynamicArray.h"
+#include "DynamicArray.cpp"
+#include "Student.h"
+#include "HashTable.h"
 #include "input.h"
 using namespace std;
 
 
 void option3();
 void mvStr(char*,const int, string&);
-bool searchContainer(const vector<int>&, int);
+HashTable<Student> translateFile(const string&);
 
-int main() {
+int main(){
     option3();
 }
 
 
-bool searchContainer(const vector<int>& haystack,int needle) {
-    for (auto a : haystack)if (a == needle)return true;
-    return false;
-}
 
-vector<int> translateFile(const string& fileName) {
+HashTable<Student> translateFile(const string& fileName) {
     if (fileName.empty())throw std::runtime_error("ERROR: INVALID FILENAME");
 
     fstream fileReader;
-    vector <int> info;
+    HashTable <Student> info;
+
+    string fromFile = "";
 
     fileReader.open(fileName, ios::in);
 
     if (fileReader.is_open()) {
-        NULL;
+        while (getline(fileReader, fromFile)) {
+            stringstream ss(fromFile);
+
+            string fileID = ""; 
+            string fileName = "";
+            string fileMajor = "";
+            string fileGPA = "";
+
+            if (!std::getline(ss, fileID, ',')) continue;
+            if (!std::getline(ss, fileName, ',')) continue;
+            if (!std::getline(ss, fileMajor, ',')) continue;
+            if (!std::getline(ss, fileGPA, ',')) continue;
+
+            Student toHash(fileName, fileMajor, stoi(fileID), stof(fileGPA));
+            info.insert(toHash);
+        }
+        fileReader.close();
     }
     else throw std::runtime_error("ERROR: FILE FAILED TO OPEN. ");
     return info;
@@ -47,7 +66,7 @@ void mvStr(char* dest, const int buffSize, string& src) {
 void option3() {
     char choice = 'A';
 
-    vector <int> haystack;
+    HashTable <Student> haystack;
 
     string tempStr = " ";
     string fileName = "student.dat";
@@ -79,7 +98,7 @@ void option3() {
     cout << "\t" << string(80, (char)196) << "\n";
     cout << "\t\t" << "0  > return\n";
     cout << "\t" << string(80, (char)205) << "\n";
-    choice = inputChar("\t\tOption :");
+    choice = toupper(inputChar("\t\tOption :"));
     switch (choice) {
     case 'A':
         n = inputInteger("\t\tEnter a number of read-in records: ", true);
@@ -94,7 +113,7 @@ void option3() {
         break;
     case 'B':
         needle = inputInteger("\t\tEnter a student ID to search:", true);
-        if (searchContainer(haystack, needle)) {
+        if (haystack.search(needle)) {
             cout << "found. ";
         }
         else {
