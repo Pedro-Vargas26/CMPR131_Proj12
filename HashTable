@@ -1,0 +1,289 @@
+#pragma once
+#include "DynamicArray.h"
+#include "Student.h"
+#include <type_traits>
+#include <concepts>
+#include <string>
+using namespace std;
+
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
+
+
+
+
+    template <typename U>
+    concept realNumber = std::is_integral_v<U> || std::is_floating_point_v<U>;
+    template <typename I>
+    concept IntegerVal = std::is_integral_v<I>;
+
+    template<typename> inline constexpr bool always_false = false;
+    enum SlotState {
+        EMPTY,
+        FILLED,
+        DELETED
+    };
+
+    struct Bucket {
+        SlotState state;
+        Student   value;
+    };
+
+
+
+
+
+template <typename T>
+class HashTable
+{
+private:
+
+
+    DynamicArray<Bucket> p_table;
+    size_t p_capacity;
+    size_t p_size;
+    double p_sizeRatio;
+
+
+    long long hashNumber(realNumber auto num) const {
+        return (static_cast<unsigned long long>(num) * 2654435761u) % p_capacity;
+    }
+
+
+    long long hashString(const std::string& key) const {
+        unsigned long long hx = 146527;
+        for (char c : key)
+            hx = (hx * 1315423911u) ^ (unsigned long long)c;
+
+        return hx % p_capacity;
+    }
+
+
+    long long hashFunction(const T& obj) const {
+        if constexpr (std::is_same_v<T, std::string>)
+            return hashString(obj);
+        else if constexpr (realNumber<T>)
+            return hashNumber(obj);
+        else
+            static_assert(always_false<T>, "No hash defined for this type");
+    }
+
+   
+    void resize() {
+        size_t oldCapacity = p_capacity;
+        p_capacity += 10;
+
+        DynamicArray<Bucket> old = p_table;
+        p_table.clear();
+
+        for (int i = 0; i < p_capacity; i++)
+            p_table.append(Bucket{ EMPTY, T{} });
+
+        p_size = 0;
+
+        for (int i = 0; i < old.size(); i++) {
+            if (old[i].state == FILLED)
+                insert(old[i].value);
+        }
+    }
+
+
+    void adjustBuckets() {
+        p_sizeRatio = double(p_size) / p_capacity;
+        if (p_sizeRatio > 0.7)
+            resize();
+    }
+
+public:
+
+  
+    HashTable(int capacity=10) {
+        if (capacity < 1)
+            throw std::runtime_error("Capacity must be positive.");
+
+        p_capacity = capacity;
+        p_size = 0;
+        p_sizeRatio = 0;
+
+        for (int i = 0; i < p_capacity; i++)
+            p_table.append(Bucket{ EMPTY, T{} });
+    }
+    void insert(const T& val) {
+        int index = hashFunction(val);
+
+        while (p_table[index].state == FILLED) {
+            index = (index + 1) % p_capacity;
+        }
+
+        p_table[index] = Bucket{ FILLED, val };
+        p_size++;
+
+        adjustBuckets();
+    }
+    
+ 
+
+    int search(const T& val) {
+        int index = hashFunction(val);
+
+        while (p_table[index].state != EMPTY) {
+            if (p_table[index].state == FILLED && p_table[index].value == val)
+                return index;
+
+            index = (index + 1) % p_capacity;
+        }
+        return -1;
+    }
+
+
+    int size() const noexcept { return (int)p_size; };
+    bool empty()const noexcept { return ((int)p_size == 0); };
+
+    bool remove(const T& val) {
+        int index = search(val);
+        if (index == -1) return false;
+
+        p_table[index].state = DELETED;
+        p_size--;
+        return true;
+    }
+
+    double getSizeRatio() const { return p_sizeRatio; }
+
+    //@exception - runtimeError for bounds checking. 
+    T& operator[](int idx) { return p_table[idx].value; }
+    const T& operator[](int idx) const { return p_table[idx].value; }
+};
+
+
+
+template <>
+class HashTable<Student> {
+private:
+    DynamicArray<Bucket> p_table;
+    size_t p_capacity;
+    size_t p_size;
+    double p_sizeRatio;
+
+
+    long long hashNumber(realNumber auto num) const {
+        return (static_cast<unsigned long long>(num) * 2654435761u) % p_capacity;
+    }
+
+
+    long long hashString(const std::string& key) const {
+        unsigned long long hx = 146527;
+        for (char c : key)
+            hx = (hx * 1315423911u) ^ (unsigned long long)c;
+
+        return hx % p_capacity;
+    }
+
+    template<typename T>
+    long long hashFunction(const T& obj) const {
+        if constexpr (std::is_same_v<T, std::string>)
+            return hashString(obj);
+        else if constexpr (realNumber<T>)
+            return hashNumber(obj);
+        else
+            static_assert(always_false<T>, "No hash defined for this type");
+    }
+
+
+    void resize() {
+        size_t oldCapacity = p_capacity;
+        p_capacity += 10;
+
+        DynamicArray<Bucket> old = p_table;
+        p_table.clear();
+
+        for (int i = 0; i < p_capacity; i++)
+            p_table.append(Bucket{ EMPTY, Student()});
+
+        p_size = 0;
+
+        for (int i = 0; i < old.size(); i++) {
+            if (old[i].state == FILLED)
+                insert(old[i].value);
+        }
+    }
+
+    void adjustBuckets() {
+        p_sizeRatio = double(p_size) / p_capacity;
+        if (p_sizeRatio > 0.7)
+            resize();
+    }
+
+public:
+
+
+    HashTable(int capacity = 10) {
+        if (capacity < 1)
+            throw std::runtime_error("Capacity must be positive.");
+
+        p_capacity = capacity;
+        p_size = 0;
+        p_sizeRatio = 0;
+
+        for (int i = 0; i < p_capacity; i++)
+            p_table.append(Bucket{ EMPTY, Student()});
+    }
+    void insert(const Student& val) {
+        int index = hashFunction(val.getID());
+
+        while (p_table[index].state == FILLED) {
+            index = (index + 1) % p_capacity;
+        }
+
+        p_table[index] = Bucket{ FILLED, val };
+        p_size++;
+
+        adjustBuckets();
+    }
+
+    int search(IntegerVal auto ID) {
+        int index = hashFunction(ID);
+
+        while (p_table[index].state != EMPTY) {
+            if (p_table[index].state == FILLED && p_table[index].value.getID() == ID)
+                return index;
+
+            index = (index + 1) % p_capacity;
+        }
+        return -1;
+    }
+
+    int search(const Student& val) {
+        int index = hashFunction(val.getID());
+
+        while (p_table[index].state != EMPTY) {
+            if (p_table[index].state == FILLED && p_table[index].value == val)
+                return index;
+
+            index = (index + 1) % p_capacity;
+        }
+        return -1;
+    }
+    int size() const noexcept { return (int)p_size; };
+    bool empty()const noexcept { return ((int)p_size == 0); };
+    bool remove(const Student& val) {
+        int index = search(val);
+        if (index == -1) return false;
+
+        p_table[index].state = DELETED;
+        p_size--;
+        return true;
+    }
+
+    double getSizeRatio() const { return p_sizeRatio; }
+
+    //@exception - runtimeError for bounds checking. 
+    Student& operator[](int idx) {
+        //bounds checking done by DynamicArray
+        return p_table[idx].value;
+    }
+    const Student& operator[](int idx) const {
+        return p_table[idx].value;
+    }
+};
+#endif
