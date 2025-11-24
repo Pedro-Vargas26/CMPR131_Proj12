@@ -204,3 +204,46 @@ int DynamicArray<T>::remove(const T& needle, bool allOrOne) noexcept
         count++;
     return count;
 }
+
+template <typename T>
+void DynamicArray<T>::sortedInsert(const T& value)
+{
+    // allocate if array is empty
+    if (!p_ptr) {
+        arrCapacity = ALLOC_INCREMENTS;
+        p_ptr = new T[arrCapacity];
+        p_ptr[0] = value;
+        arrSize = 1;
+        isSorted = true;
+        return;
+    }
+
+    // ensure capacity
+    if (arrSize == arrCapacity)
+    {
+        T* newArr = new T[arrCapacity + ALLOC_INCREMENTS];
+        for (int i = 0; i < arrSize; i++)
+            newArr[i] = p_ptr[i];
+
+        delete[] p_ptr;
+        p_ptr = newArr;
+        arrCapacity += ALLOC_INCREMENTS;
+    }
+
+    // find the insert position
+    int pos = 0;
+    while (pos < arrSize && p_ptr[pos] < value)
+        pos++;
+
+    // shift elements right
+    for (int i = arrSize; i > pos; i--)
+        p_ptr[i] = p_ptr[i - 1];
+
+    // insert value
+    p_ptr[pos] = value;
+    arrSize++;
+    isSorted = true;
+}
+
+
+
