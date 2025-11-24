@@ -13,7 +13,7 @@ private:
     bool isSorted;
 
 public:
- 
+
     DynamicArray();
     DynamicArray(const DynamicArray& other);
     DynamicArray& operator=(const DynamicArray& other);
@@ -36,6 +36,8 @@ public:
 
     int remove(const T& needle) noexcept;
     int remove(const T& needle, bool allOrOne) noexcept;
+
+    void sortedInsert(const T& value);
 
 
     T& operator[](int index);
