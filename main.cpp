@@ -49,30 +49,28 @@ void option1() {
 
         cout << "\t1 > Searching unsorted dynamic arrays\n";
         cout << "\t" << string(85, (char)196) << "\n";
-        cout << "\t\t" << "1 > Read data file and store into the array\n";
-        cout << "\t\t" << "2 > Add an element to the dynamic array\n";
-        cout << "\t\t" << "3 > Display elements from the array\n";
-        cout << "\t\t" << "4 > Search for an element from the array\n";
-        cout << "\t\t" << "5 > Clear the array\n";
+        cout << "\t\t" << "A > Read data file and store into the array\n";
+        cout << "\t\t" << "B > Add an element to the dynamic array\n";
+        cout << "\t\t" << "C > Display elements from the array\n";
+        cout << "\t\t" << "D > Search for an element from the array\n";
+        cout << "\t\t" << "E > Clear the array\n";
         cout << "\t" << string(85, (char)196) << "\n";
         cout << "\t\t" << "0 > return\n";
         cout << "\t" << string(85, (char)205) << "\n";
-
-            //choice = inputChar("\tERROR INVALID CHOICE. TRY AGAIN:");
         
-        switch (inputInteger("\tOption: ", 0, 5))
+        switch (toupper(inputChar("\t\tOption: ", static_cast<string>("abcdefgh0"))))
         {
-        case 1:
+        case 'A':
             break;
-        case 2:
+        case 'B':
             break;
-        case 3:
+        case 'C':
             break;
-        case 4:
+        case 'D':
             break;
-        case 5:
+        case 'E':
             break;
-        case 0: return;
+        case '0': return;
         default:
         {
             cout << "\n\tERROR: invalid input...";
@@ -88,40 +86,39 @@ void option2() {
         system("cls");
 
 
-        cout << "\t1 > Searching sorted dynamic arrays\n";
+        cout << "\t2 > Searching sorted dynamic arrays\n";
         cout << "\t" << string(85, (char)205) << "\n";
-        cout << "\t\t" << "1 > Read data file and store into the array\n";
-        cout << "\t\t" << "2 > Add an element to the dynamic array\n";
-        cout << "\t\t" << "3 > Display elements from the array\n";
-        cout << "\t\t" << "4 > Search for an element from the array\n";
-        cout << "\t\t" << "5 > Clear the array\n";
+        cout << "\t\t" << "A > Read data file and store into the array\n";
+        cout << "\t\t" << "B > Add an element to the dynamic array\n";
+        cout << "\t\t" << "C > Display elements from the array\n";
+        cout << "\t\t" << "D > Search for an element from the array\n";
+        cout << "\t\t" << "E > Clear the array\n";
         cout << "\t" << string(85, (char)196) << "\n";
         cout << "\t\t" << "0 > return\n";
         cout << "\t" << string(85, (char)205) << "\n";
-        choice = inputChar("\t\tChoice:");
-        if (choice < '0' || choice > '5') {
-            while ((choice < '0') || (choice > '5')) {
-                choice = inputChar("\tERROR INVALID CHOICE. TRY AGAIN:");
-            }
-        }
-        switch (choice) {
-        case '1':
+
+        switch (toupper(inputChar("\t\tOption: ", static_cast<string>("abcdefgh0"))))
+        {
+        case 'A':
             break;
-        case '2':
+        case 'B':
             break;
-        case '3':
+        case 'C':
             break;
-        case '4':
+        case 'D':
             break;
-        case '5':
+        case 'E':
             break;
-        case '0':
-            running = false;
-            break;
+        case 0: return;
+        default:
+        {
+            cout << "\n\tERROR: invalid input...";
+        }break;
         }
         system("pause");
     } while (running);
 }
+
 char mainMenu() {
     char choice = 'A';
     cout << "\t" << "CMPR131 Chapter 12: Searches and hashing by Pedro Vargas (11/23/2025)\n";
