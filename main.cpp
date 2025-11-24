@@ -9,14 +9,125 @@
 using namespace std;
 
 
+void option1();
+void option2();
 void option3();
 void mvStr(char*,const int, string&);
 HashTable<Student> translateFile(const string&, int&);
 
+
+char mainMenu();
+
 int main(){
-    option3();
+    switch (mainMenu()) {
+    case '1':
+        option1();
+        break;
+    case '2':
+        option2();
+        break;
+    case '3':
+        option3();
+        break;
+   }
 }
 
+void option1() {
+    char choice = 'A';
+    bool running = true;
+    do {
+        system("cls");
+
+        cout << "\t1 > Searching unsorted dynamic arrays\n";
+        cout << "\t" << string(85, (char)196) << "\n";
+        cout << "\t\t" << "1 > Read data file and store into the array\n";
+        cout << "\t\t" << "2 > Add an element to the dynamic array\n";
+        cout << "\t\t" << "3 > Display elements from the array\n";
+        cout << "\t\t" << "4 > Search for an element from the array\n";
+        cout << "\t\t" << "5 > Clear the array\n";
+        cout << "\t" << string(85, (char)196) << "\n";
+        cout << "\t\t" << "0 > return\n";
+        cout << "\t" << string(85, (char)205) << "\n";
+        while ((choice < '0') || (choice > '3')) {
+            choice = inputChar("\tERROR INVALID CHOICE. TRY AGAIN:");
+        }
+        switch (choice) {
+        case '1':
+            break;
+        case '2':
+            break;
+        case '3':
+            break;
+        case '4':
+            break;
+        case '5':
+            break;
+        case '0':
+            running = false;
+            break;
+        }
+        system("pause");
+    } while (running);
+}
+void option2() {
+    char choice = 'A';
+    bool running = true;
+    do {
+        system("cls");
+
+
+        cout << "\t1 > Searching sorted dynamic arrays\n";
+        cout << "\t" << string(85, (char)205) << "\n";
+        cout << "\t\t" << "1 > Read data file and store into the array\n";
+        cout << "\t\t" << "2 > Add an element to the dynamic array\n";
+        cout << "\t\t" << "3 > Display elements from the array\n";
+        cout << "\t\t" << "4 > Search for an element from the array\n";
+        cout << "\t\t" << "5 > Clear the array\n";
+        cout << "\t" << string(85, (char)196) << "\n";
+        cout << "\t\t" << "0 > return\n";
+        cout << "\t" << string(85, (char)205) << "\n";
+        choice = inputChar("\t\tChoice:");
+        if (choice < '0' || choice > '5') {
+            while ((choice < '0') || (choice > '5')) {
+                choice = inputChar("\tERROR INVALID CHOICE. TRY AGAIN:");
+            }
+        }
+        switch (choice) {
+        case '1':
+            break;
+        case '2':
+            break;
+        case '3':
+            break;
+        case '4':
+            break;
+        case '5':
+            break;
+        case '0':
+            running = false;
+            break;
+        }
+        system("pause");
+    } while (running);
+}
+char mainMenu() {
+    char choice = 'A';
+    cout << "\t" << "CMPR131 Chapter 12: Searches and hashing by Pedro Vargas (11/23/2025)\n";
+    cout << "\t" << string(85, (char)205) << "\n";
+    cout << "\t\t" << "1 > Searching from an unsorted dynamic array\n";
+    cout << "\t\t" << "2 > Searching from a sorted dynamic array\n";
+    cout << "\t\t" << "3 > Application using hashing\n";
+    cout << "\t" << string(85, (char)196) << "\n";
+    cout << "\t\t" << "0 > Exit\n";
+    cout << "\t" << string(85, (char)205) << "\n";
+    choice = inputChar("\tOption :");
+    if (choice < '0' || choice > '3') {
+        while ((choice < '0') || (choice > '3')) {
+            choice = inputChar("\tERROR INVALID CHOICE. TRY AGAIN:");
+        }
+    }
+    return choice;
+}
 
 
 HashTable<Student> translateFile(const string& fileName, int& n) {
