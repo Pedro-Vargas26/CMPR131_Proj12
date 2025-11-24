@@ -15,8 +15,10 @@ void option3();
 void mvStr(char*, const int, string&);
 HashTable<Student> translateFile(const string&, int&);
 void populate(DynamicArray<string>&, int);
-int serialStringSearch(DynamicArray<string>& , int , const string& );
-int binaryStringSearch(DynamicArray<string>&, int,int, const string&);
+int serialStringSearch(DynamicArray<string>&, int, const string&);
+int binaryStringSearch(DynamicArray<string>&, int, int, const string&);
+
+
 
 char mainMenu();
 
@@ -36,21 +38,20 @@ int main() {
             option3();
             break;
         case '0':
-            running = false;
+            running = false;   // Exit cleanly
             break;
         }
     }
 }
 
-
 void populate(DynamicArray<string>& dataset, int n) {
     for (int i = 0; i < n; i++) {
 
-        int randLength = 5 + rand() % 20; 
+        int randLength = 5 + rand() % 20;
         string s = "";
 
         for (int j = 0; j < randLength; j++) {
-            s += 'a' + rand() % 26;  
+            s += 'a' + rand() % 26;
         }
 
         dataset.append(s);
@@ -90,43 +91,43 @@ void option1() {
 
         cout << "\t1 > Searching unsorted dynamic arrays\n";
         cout << "\t" << string(85, (char)196) << "\n";
-        cout << "\t\t" << "1 > Read data file and store into the array\n";
-        cout << "\t\t" << "2 > Add an element to the dynamic array\n";
-        cout << "\t\t" << "3 > Display elements from the array\n";
-        cout << "\t\t" << "4 > Search for an element from the array\n";
-        cout << "\t\t" << "5 > Clear the array\n";
+        cout << "\t\t" << "A > Read data file and store into the array\n";
+        cout << "\t\t" << "B > Add an element to the dynamic array\n";
+        cout << "\t\t" << "C > Display elements from the array\n";
+        cout << "\t\t" << "D > Search for an element from the array\n";
+        cout << "\t\t" << "E > Clear the array\n";
         cout << "\t" << string(85, (char)196) << "\n";
         cout << "\t\t" << "0 > return\n";
         cout << "\t" << string(85, (char)205) << "\n";
 
-        switch (inputInteger("\tOption: ", 0, 5))
+        switch (toupper(inputChar("\t\tOption: ", static_cast<string>("ABCDE0"))))
         {
-        case 1:
+        case 'A':
             n = inputInteger("\t\tEnter the size of the dynamic array: ", true);
 
             populate(ds, n);
 
             cout << "\t\t" << "Random elements have been populated into the array. \n\n";
             break;
-        case 2:
+        case 'B':
             tempStr = inputString("\n\t\tEnter a string element: ", false);
 
             ds.append(tempStr);
 
             cout << "\t\t" << "Element \"" << tempStr << "\" has been added to the array. \n\n";
             break;
-        case 3:
+        case 'C':
             if (ds.empty()) {
                 cout << "\t\t" << "The array is empty. \n\n";
             }
             else {
                 cout << "\t";
-                for (int i = 0; i < ds.size();i++)
+                for (int i = 0; i < ds.size(); i++)
                     cout << ds[i] << " ";
             }
             cout << "\n";
             break;
-        case 4:
+        case 'D':
             if (ds.empty()) {
                 cout << "\t\t" << "The array is empty. \n\n";
             }
@@ -136,9 +137,9 @@ void option1() {
                 if (choice == 'S') {
                     cout << "\t\t" << "Recursive serial search\n";
                     cout << "\t\t" << string(65, (char)196) << "\n";
-                   
-                    tempStr = inputString("\t\tEnter a string element to search:",false);
-                    idx = serialStringSearch(ds,0, tempStr);
+
+                    tempStr = inputString("\t\tEnter a string element to search:", false);
+                    idx = serialStringSearch(ds, 0, tempStr);
                     if (idx != -1) {
                         cout << "\t\t" << tempStr << " is found at index " << idx << " from the unsorted array. \n\n";
                     }
@@ -149,7 +150,7 @@ void option1() {
                     cout << "\t\t" << "Recursive binary search\n";
                     cout << "\t\t" << string(65, (char)196) << "\n";
                     tempStr = inputString("\t\tEnter a string element to search:", false);
-                    idx = binaryStringSearch(ds, 0,ds.size()-1, tempStr);
+                    idx = binaryStringSearch(ds, 0, ds.size() - 1, tempStr);
                     if (idx != -1) {
                         cout << "\t\t" << tempStr << " is found at index " << idx << " from the unsorted array. \n\n";
                     }
@@ -158,7 +159,7 @@ void option1() {
                 }
             }
             break;
-        case 5:
+        case 'E':
             if (ds.empty()) {
                 cout << "\t\t" << "The array is empty. \n\n";
             }
@@ -167,7 +168,7 @@ void option1() {
                 cout << "\t\t" << "Elements from the array have been cleared/deleted.\n\n";
             }
             break;
-        case 0: return;
+        case '0': return;
         default:
         {
             cout << "\n\tERROR: invalid input...";
@@ -177,47 +178,133 @@ void option1() {
         system("pause");
     } while (true);
 }
+
 void option2() {
-    char choice = 'A';
-    bool running = true;
+    DynamicArray<std::string> sortedArray;
+
     do {
         system("cls");
 
-
-        cout << "\t1 > Searching sorted dynamic arrays\n";
+        cout << "\t2 > Searching sorted dynamic arrays\n";
         cout << "\t" << string(85, (char)205) << "\n";
-        cout << "\t\t" << "1 > Read data file and store into the array\n";
-        cout << "\t\t" << "2 > Add an element to the dynamic array\n";
-        cout << "\t\t" << "3 > Display elements from the array\n";
-        cout << "\t\t" << "4 > Search for an element from the array\n";
-        cout << "\t\t" << "5 > Clear the array\n";
+        cout << "\t\t" << "A > Randomly generate data and store into the array\n";
+        cout << "\t\t" << "B > Add an element to the dynamic array\n";
+        cout << "\t\t" << "C > Display elements from the array\n";
+        cout << "\t\t" << "D > Search (binary) for an element from the array\n";
+        cout << "\t\t" << "E > Clear the array\n";
         cout << "\t" << string(85, (char)196) << "\n";
         cout << "\t\t" << "0 > return\n";
         cout << "\t" << string(85, (char)205) << "\n";
-        choice = inputChar("\t\tChoice:");
-        if (choice < '0' || choice > '5') {
-            while ((choice < '0') || (choice > '5')) {
-                choice = inputChar("\tERROR INVALID CHOICE. TRY AGAIN:");
+
+        switch (toupper(inputChar("\t\tOption: ", static_cast<string>("ABCDE0"))))
+        {
+        case 'A':
+        {
+            int n = inputInteger("\n\t\tEnter the size of the dynmic array: ", 1, 100000);
+            sortedArray.clear();
+
+            for (int i = 0; i < n; i++)
+            {
+                int num = rand() % n;          
+                string value = "str#" + to_string(num);
+
+                sortedArray.sortedInsert(value);
             }
+
+            cout << "\n\t\tRandom elements have been populated into the array.\n\n";
+            break;
         }
-        switch (choice) {
-        case '1':
+
+
+        case 'B':
+        {
+            string value;
+            cout << "\n\t\tEnter a string to insert: ";
+            getline(cin, value);
+
+            sortedArray.sortedInsert(value);
+
+            cout << "\n\t\tElement \"" << value << "\" has been added to the array\n\n";
             break;
-        case '2':
+        }
+
+        case 'C':
+        {
+            if (sortedArray.empty()) {
+                cout << "\n\tArray is empty.\n\n";
+                break;
+            }
+
+            cout << "\n";
+            for (size_t i = 0; i < sortedArray.size(); i++)
+                cout << "\t" << sortedArray[i] << " ";
+            cout << "\n\n";
             break;
-        case '3':
+        }
+        case 'D':
+        {
+            if (sortedArray.empty()) {
+                cout << "\n\tArray is empty.\n\n";
+                break;
+            }
+
+
+            char choice = toupper(inputChar("\n\t\tChoose search type (S)Serial or (B)Binary: ", "SB"));
+
+            int index = -1;
+
+            if (choice == 'S')
+            {
+                cout << "\n\t\tSTL serial search\n";
+                cout << "\t\t" << string(40, (char)196) << "\n";
+                string key = inputString("\n\t\tEnter a string to search for: ", true);
+                index = serialStringSearch(sortedArray, 0, key);
+
+                if (index != -1)
+                    cout << "\n\t\"" << key << "\" found at index " << index << "from the unsorted array.\n\n";
+                else
+                    cout << "\n\t\"" << key << "\" not found.\n\n";
+            }
+            else if (choice == 'B')
+            {
+                cout << "\n\t\tSTL Binary search\n";
+                cout << "\t\t" << string(40, (char)196) << "\n";
+                string key = inputString("\n\t\tEnter a string to search for: ", true);
+                index = binaryStringSearch(sortedArray, 0, sortedArray.size() - 1, key);
+
+                if (index != -1)
+                    cout << "\n\t\"" << key << "\" found at index " << index << "from the sorted array.\n\n";
+                else
+                    cout << "\n\t\"" << key << "\" not found.\n\n";
+            }
+            else
+            {
+                cout << "\n\tInvalid choice.\n\n";
+            }
+
             break;
-        case '4':
+        }
+
+        case 'E':
+        {
+            sortedArray.clear();
+            cout << "\tArray cleared.\n\n";
             break;
-        case '5':
-            break;
+        }
+
         case '0':
-            running = false;
+            return;
+
+        default:
+            cout << "\n\tERROR: invalid input...\n";
             break;
         }
+
         system("pause");
-    } while (running);
+
+    } while (true);
 }
+
 char mainMenu() {
     char choice = 'A';
     cout << "\t" << "CMPR131 Chapter 12: Searches and hashing by Pedro Vargas (11/23/2025)\n";
